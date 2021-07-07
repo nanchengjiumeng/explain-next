@@ -1,7 +1,7 @@
 type SVGString = string // fetch得到的svg文件的字符串
 type AnimeItem = {
 	id: string, // dom的id
-	tagName, // 元素标签名
+	tagName: string, // 元素标签名
 	startTime: number,
 	duration: number,
 	strokeLength: number, // 笔记长度
@@ -14,13 +14,13 @@ const ANIME_DURATION: string = 'anime-duration' // svg文件字符串中<path>�
 export class SVGStringParser {
 	public originalSvgString: string
 	public animeList: AnimeItem[] = []
-	public svgString: SVGString
+	public svgString: SVGString = ""
 	public width: number = 0 // svg的宽高
 	public height: number = 0 // svg的宽高
 	public parsed: boolean = false
 	public loaded: boolean = false
 	constructor(
-		originalSvgString
+		originalSvgString: string
 	) {
 		this.originalSvgString = originalSvgString
 	}
@@ -40,6 +40,9 @@ export class SVGStringParser {
 					return res.body
 				})
 				.then((body) => {
+					if (!body) {
+						throw "读取svg string body 为空."
+					}
 					const reader = body.getReader();
 					var str = ""
 					return new Promise((resolve) => {
@@ -48,7 +51,7 @@ export class SVGStringParser {
 							return reader.read().then(({ done, value }) => {
 								if (done) {
 									resolve(str)
-								} else {
+								} else if (value) {
 									for (let key = 0; key < value.length; key++) {
 										str += String.fromCharCode(value[key])
 									}
@@ -89,7 +92,11 @@ export class SVGStringParser {
 		// 接卸svg的宽高参数
 		const ele1: HTMLDivElement = document.createElement('div')
 		ele1.innerHTML = this.originalSvgString
-		const viewBox: SVGRect = ele1.querySelector('svg').viewBox.baseVal
+		const ele1SvgEle = ele1.querySelector('svg')
+		if (!ele1SvgEle) {
+			throw new EvalError('cannot find <svg> in current svg string.')
+		}
+		const viewBox: SVGRect = ele1SvgEle.viewBox.baseVal
 		this.width = viewBox.width
 		this.height = viewBox.height
 

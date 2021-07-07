@@ -5,30 +5,23 @@
   <div class="selection">
     Shape:
     <select v-model="shape">
-      <option :value="s.val" v-for="s in penShapeList" :key="s.val">
-        {{ s.name }}
-      </option>
+      <option :value="s.val" v-for="s in penShapeList" :key="s.val">{{ s.name }}</option>
     </select>
     Color:
     <select v-model="color">
-      <option :value="c.val" v-for="c in penColorList" :key="c.val">
-        {{ c.name }}
-      </option>
+      <option :value="c.val" v-for="c in penColorList" :key="c.val">{{ c.name }}</option>
     </select>
-    srokeWidthList:
+    StrokeWidthList:
     <select v-model="stokeWidth">
-      <option :value="s.val" v-for="s in srokeWidthList" :key="s.val">
-        {{ s.name }}
-      </option>
+      <option :value="s.val" v-for="s in StrokeWidthList" :key="s.val">{{ s.name }}</option>
     </select>
     locked:
-    <button @click="locked = !locked">
-      {{ locked ? "已锁定" : "已打开" }}
-    </button>
+    <button @click="locked = !locked">{{ locked ? "已锁定" : "已打开" }}</button>
   </div>
 </template>
 
 <script lang="ts">
+import SVG from 'svg.js'
 import {
   defineComponent,
   getCurrentInstance,
@@ -36,6 +29,7 @@ import {
   ComponentInternalInstance,
   ref,
   Ref,
+  onUnmounted,
 } from "vue";
 import "../packages/board/index";
 import { createSvgDraw } from "../packages/board/index";
@@ -44,26 +38,21 @@ import {
   PenColors,
   penShapeList,
   PenShapes,
-  srokeWidthList,
+  StrokeWidthList,
   StrokeWidths,
 } from "../packages/board/vars";
 export default defineComponent({
-  name: "HelloWorld",
-  props: {
-    msg: {
-      type: String,
-      required: true,
-    },
-  },
+  name: "Board",
   setup: () => {
     const _this: ComponentInternalInstance | null = getCurrentInstance();
     const shape: Ref<PenShapes> = ref(penShapeList[0].val) as Ref<PenShapes>;
     const color: Ref<PenColors> = ref(penColorList[0].val) as Ref<PenColors>;
-    const stokeWidth: Ref<StrokeWidths> = ref(srokeWidthList[0].val);
+    const stokeWidth: Ref<StrokeWidths> = ref(StrokeWidthList[0].val);
     const locked: Ref<Boolean> = ref(false);
+    let draw: SVG.Doc | undefined;
     onMounted(() => {
       if (_this && _this.refs.board) {
-        createSvgDraw(
+        draw = createSvgDraw(
           _this.refs.board as HTMLElement,
           shape,
           color,
@@ -75,6 +64,13 @@ export default defineComponent({
       }
     });
 
+    onUnmounted(() => {
+      if (draw) {
+        draw.destroy()
+      }
+    })
+
+
     return {
       locked,
       shape,
@@ -82,7 +78,7 @@ export default defineComponent({
       stokeWidth,
       penShapeList,
       penColorList,
-      srokeWidthList,
+      StrokeWidthList,
     };
   },
 });

@@ -31,7 +31,7 @@ export const penShapeList: PenShape[] = [
 	{ val: PenShapes.Circle, name: "Circle" },
 ];
 
-export const srokeWidthList: SrokeWidth[] = [
+export const StrokeWidthList: StrokeWidth[] = [
 	{
 		val: StrokeWidths.Thin,
 		name: '细'

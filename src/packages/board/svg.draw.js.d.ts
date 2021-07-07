@@ -6,25 +6,28 @@ type PenShape = {
 	name: string,
 	val: string
 }
-type SrokeWidth = {
+type StrokeWidth = {
 	name: string,
 	val: number
 }
 
 
-interface MouseEventListner {
+interface MouseEventListener {
 	(evt: MouseEvent): void;
 }
 
 type PointArr = [number, number]
 
 declare interface Window {
-	SVG: any
+	SVG: any,
 }
 
 declare namespace svgjs {
 	interface Element {
 		draw: (a: string | MouseEvent, b?: MouseEvent) => any,
+	}
+	interface Doc {
+		destroy: () => any;
 	}
 }
 
