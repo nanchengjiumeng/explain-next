@@ -11,8 +11,7 @@ export function createSvgDraw(
 	strokeWidth: Ref<StrokeWidths>,
 	Locked: Ref<Boolean>,
 	width: number,
-	height: number
-
+	height: number,
 ): SVG.Doc {
 	const draw: SVG.Doc = SVG(node)
 	const shapes: SVG.Element[] = [];

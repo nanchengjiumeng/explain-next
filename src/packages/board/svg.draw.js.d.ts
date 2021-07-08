@@ -33,6 +33,7 @@ declare namespace svgjs {
 
 declare interface PaintHandle {
 	new(): any;
+	set:
 	el: svgjs.Element
 }
 
