@@ -4,7 +4,7 @@ export enum PenColors {
 }
 export enum PenShapes {
 	MousePaint = "polyline",
-	Recangle = 'rect',
+	Rectangle = 'rect',
 	Circle = 'ellipse'
 }
 
@@ -27,7 +27,7 @@ export const penColorList: PenColor[] = [
 
 export const penShapeList: PenShape[] = [
 	{ val: PenShapes.MousePaint, name: "Mouse paint" },
-	{ val: PenShapes.Recangle, name: "Recangle" },
+	{ val: PenShapes.Rectangle, name: "Rectangle" },
 	{ val: PenShapes.Circle, name: "Circle" },
 ];
 

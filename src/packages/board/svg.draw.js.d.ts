@@ -31,6 +31,15 @@ declare namespace svgjs {
 	}
 }
 
+declare interface PaintHandle {
+	new(): any;
+	el: svgjs.Element
+}
+
+declare interface writeCallback {
+	(ele: svgjs.Element): any;
+}
+
 declare module 'smooth-polyline' {
 	export default function (pointArr: PointArr[]): PointArr[];
 }

@@ -2,7 +2,8 @@ import SVG from 'svg.js'
 window.SVG = SVG
 import 'svg.draw.js'
 
-export function init(worker: Worker) {
+
+export function init(worker: Worker, startWrite?: Function, endWrite?: Function) {
 	SVG.Element.prototype.draw.extend('line polyline polygon', {
 		init: function (e: MouseEvent) {
 			// When we draw a polygon, we immediately need 2 points.
@@ -10,6 +11,10 @@ export function init(worker: Worker) {
 			this.set = new SVG.Set();
 			var p: SVGPoint = this.startPoint
 			this.el.plot([[p.x, p.y], [p.x, p.y]]);
+
+			if (startWrite) {
+				startWrite(this.el)
+			}
 		},
 
 		// The calc-function sets the Pointtion of the last point to the mouse-Pointtion (with offset ofc)
@@ -63,6 +68,9 @@ export function init(worker: Worker) {
 					pointArrList: this.el.array().valueOf(),
 					channel: this.el.node.id
 				})
+				if (endWrite) {
+					endWrite(this.el)
+				}
 			}
 
 			if (e) {

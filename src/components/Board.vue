@@ -15,7 +15,7 @@
     <select v-model="stokeWidth">
       <option :value="s.val" v-for="s in StrokeWidthList" :key="s.val">{{ s.name }}</option>
     </select>
-    locked:
+    locked:{{ locked }}
     <button @click="locked = !locked">{{ locked ? "已锁定" : "已打开" }}</button>
   </div>
 </template>

@@ -28,7 +28,7 @@ export function createSvgDraw(
 
 	const lockifyMouseEventListener = (mouseEventListener: MouseEventListener): MouseEventListener => {
 		return function (event: MouseEvent) {
-			if (Locked) {
+			if (!Locked.value) {
 				mouseEventListener(event)
 			}
 		}
