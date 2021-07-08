@@ -3,17 +3,17 @@ window.SVG = SVG
 import 'svg.draw.js'
 
 
-export function init(worker: Worker, startWrite?: writeCallback, endWrite?: writeCallback) {
+export function init(worker: Worker, startWrite?: WriteCallback, endWrite?: WriteCallback) {
 	SVG.Element.prototype.draw.extend('line polyline polygon', {
 		init: function (e: MouseEvent) {
 			const _this = this as PaintHandle
 			// When we draw a polygon, we immediately need 2 points.
 			// One start-point and one point at the mouse-Posinttion
-			this.set = new SVG.Set();
+			_this.set = new SVG.Set();
 			var p: SVGPoint = this.startPoint
-			this.el.plot([[p.x, p.y], [p.x, p.y]]);
+			_this.el.plot([[p.x, p.y], [p.x, p.y]]);
 			if (startWrite) {
-				startWrite(this.el)
+				startWrite(_this.el)
 			}
 		},
 

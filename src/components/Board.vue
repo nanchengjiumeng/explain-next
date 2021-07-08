@@ -1,7 +1,5 @@
 <template>
-  <div class="board__box">
-    <div ref="board"></div>
-  </div>
+  <div class="board__box" ref="board"></div>
   <div class="selection">
     Shape:
     <select v-model="shape">
@@ -17,68 +15,52 @@
     </select>
     locked:{{ locked }}
     <button @click="locked = !locked">{{ locked ? "已锁定" : "已打开" }}</button>
+    <button @click="loadSVGString">加载文件</button>
   </div>
 </template>
 
 <script lang="ts">
-import SVG from 'svg.js'
 import {
   defineComponent,
   getCurrentInstance,
   onMounted,
   ComponentInternalInstance,
-  ref,
-  Ref,
   onUnmounted,
+  onErrorCaptured,
 } from "vue";
 import "../packages/board/index";
-import { createSvgDraw } from "../packages/board/index";
-import {
-  penColorList,
-  PenColors,
-  penShapeList,
-  PenShapes,
-  StrokeWidthList,
-  StrokeWidths,
-} from "../packages/board/vars";
+import * as draw from "./draw";
+import ss from './test'
+
 export default defineComponent({
   name: "Board",
   setup: () => {
-    const _this: ComponentInternalInstance | null = getCurrentInstance();
-    const shape: Ref<PenShapes> = ref(penShapeList[0].val) as Ref<PenShapes>;
-    const color: Ref<PenColors> = ref(penColorList[0].val) as Ref<PenColors>;
-    const stokeWidth: Ref<StrokeWidths> = ref(StrokeWidthList[0].val);
-    const locked: Ref<Boolean> = ref(false);
-    let draw: SVG.Doc | undefined;
+    const instanceComp: ComponentInternalInstance | null = getCurrentInstance();
+    let instanceDraw: draw.Result = draw.init();
     onMounted(() => {
-      if (_this && _this.refs.board) {
-        draw = createSvgDraw(
-          _this.refs.board as HTMLElement,
-          shape,
-          color,
-          stokeWidth,
-          locked,
-          200,
-          300
-        );
+      if (instanceComp && instanceComp.refs.board) {
+        (instanceComp.refs.board as HTMLElement).appendChild(instanceDraw.dom);
       }
     });
 
     onUnmounted(() => {
       if (draw) {
-        draw.destroy()
+        instanceDraw.doc.destroy()
       }
     })
 
+    onErrorCaptured(() => {
+      console.log('出错了');
+
+    })
+
+    const loadSVGString = () => {
+      instanceDraw.inputSvgString(ss)
+    }
 
     return {
-      locked,
-      shape,
-      color,
-      stokeWidth,
-      penShapeList,
-      penColorList,
-      StrokeWidthList,
+      ...instanceDraw,
+      loadSVGString
     };
   },
 });

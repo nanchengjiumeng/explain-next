@@ -25,6 +25,7 @@ declare interface Window {
 declare namespace svgjs {
 	interface Element {
 		draw: (a: string | MouseEvent, b?: MouseEvent) => any,
+		plot: (arr: PointArr[]) => void;
 	}
 	interface Doc {
 		destroy: () => any;
@@ -33,11 +34,11 @@ declare namespace svgjs {
 
 declare interface PaintHandle {
 	new(): any;
-	set:
-	el: svgjs.Element
+	set: svgjs.Set;
+	el: svgjs.Element;
 }
 
-declare interface writeCallback {
+declare interface WriteCallback {
 	(ele: svgjs.Element): any;
 }
 

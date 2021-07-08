@@ -12,13 +12,15 @@ export function createSvgDraw(
 	Locked: Ref<Boolean>,
 	width: number,
 	height: number,
+	startWrite?: WriteCallback,
+	endWrite?: WriteCallback
 ): SVG.Doc {
 	const draw: SVG.Doc = SVG(node)
 	const shapes: SVG.Element[] = [];
 
 	// 处理平滑的线程
 	const smoothWorker: Worker = smooth.createSmoothWorker()
-	svgDraw.init(smoothWorker)
+	svgDraw.init(smoothWorker, startWrite, endWrite)
 	draw.destroy = () => smoothWorker.terminate()
 
 	let index = 0;
@@ -65,10 +67,10 @@ export function createSvgDraw(
 
 	draw.viewbox(0, 0, width, height) // 设置viewbox宽高
 
-	draw.on('mousedown', (event: MouseEvent) => { lockifyMouseEventListener(startDraw)(event) });
-	draw.on('mousemove', (event: MouseEvent) => { lockifyMouseEventListener(drawing)(event) })
-	draw.on('mouseleave', (event: MouseEvent) => { lockifyMouseEventListener(stopDraw)(event) })
-	draw.on('mouseup', (event: MouseEvent) => { lockifyMouseEventListener(stopDraw)(event) })
+	draw.on('mousedown', lockifyMouseEventListener(startDraw));
+	draw.on('mousemove', lockifyMouseEventListener(drawing))
+	draw.on('mouseleave', lockifyMouseEventListener(stopDraw))
+	draw.on('mouseup', lockifyMouseEventListener(stopDraw))
 
 	return draw
 }
