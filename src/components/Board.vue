@@ -3,18 +3,32 @@
   <div class="selection">
     Shape:
     <select v-model="shape">
-      <option :value="s.val" v-for="s in penShapeList" :key="s.val">{{ s.name }}</option>
+      <option :value="s.val" v-for="s in penShapeList" :key="s.val">
+        {{ s.name }}
+      </option>
     </select>
     Color:
     <select v-model="color">
-      <option :value="c.val" v-for="c in penColorList" :key="c.val">{{ c.name }}</option>
+      <option :value="c.val" v-for="c in penColorList" :key="c.val">
+        {{ c.name }}
+      </option>
     </select>
     StrokeWidthList:
     <select v-model="stokeWidth">
-      <option :value="s.val" v-for="s in StrokeWidthList" :key="s.val">{{ s.name }}</option>
+      <option :value="s.val" v-for="s in StrokeWidthList" :key="s.val">
+        {{ s.name }}
+      </option>
+    </select>
+    ScaleTimesList:
+    <select v-model="ScaleTimes">
+      <option :value="s.value" v-for="s in ScaleTimesList" :key="s.value">
+        {{ s.name }}
+      </option>
     </select>
     locked:{{ locked }}
-    <button @click="locked = !locked">{{ locked ? "已锁定" : "已打开" }}</button>
+    <button @click="locked = !locked">
+      {{ locked ? "已锁定" : "已打开" }}
+    </button>
     <button @click="loadSVGString">加载文件</button>
   </div>
 </template>
@@ -30,8 +44,7 @@ import {
 } from "vue";
 import "../packages/board/index";
 import * as draw from "./draw";
-import ss from './test'
-
+import { load as loadSVGFromUri } from "../packages/loaders";
 export default defineComponent({
   name: "Board",
   setup: () => {
@@ -45,22 +58,24 @@ export default defineComponent({
 
     onUnmounted(() => {
       if (draw) {
-        instanceDraw.doc.destroy()
+        instanceDraw.doc.destroy();
       }
-    })
+    });
 
     onErrorCaptured(() => {
-      console.log('出错了');
+      console.log("出错了");
+    });
 
-    })
-
-    const loadSVGString = () => {
-      instanceDraw.inputSvgString(ss)
-    }
+    const loadSVGString = async () => {
+      const svgStringParsed = await loadSVGFromUri("/test.svg?123");
+      console.log(svgStringParsed);
+      
+      instanceDraw.inputSvgString(svgStringParsed.originalSvgString);
+    };
 
     return {
       ...instanceDraw,
-      loadSVGString
+      loadSVGString,
     };
   },
 });

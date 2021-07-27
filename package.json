@@ -6,6 +6,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "smooth-polyline": "^1.0.8",
     "svg.draw.js": "^2.0.4",
     "svg.js": "2.7",

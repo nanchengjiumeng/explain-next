@@ -23,50 +23,7 @@ export class SVGStringParser {
 		originalSvgString: string
 	) {
 		this.originalSvgString = originalSvgString
-	}
-
-	/**
-	 * 通过oss地址请求svg文件的字符串
-	 * @param url oss地址
-	 * @returns 
-	 */
-	async fetchSvg(url: string): Promise<SVGString> {
-		try {
-			const fileString: SVGString = await fetch(url)
-				.then((res) => {
-					if (res.status !== 200) {
-						throw new Error("load svg error!")
-					}
-					return res.body
-				})
-				.then((body) => {
-					if (!body) {
-						throw "读取svg string body 为空."
-					}
-					const reader = body.getReader();
-					var str = ""
-					return new Promise((resolve) => {
-						function push() {
-							// "done" is a Boolean and value a "Uint8Array"
-							return reader.read().then(({ done, value }) => {
-								if (done) {
-									resolve(str)
-								} else if (value) {
-									for (let key = 0; key < value.length; key++) {
-										str += String.fromCharCode(value[key])
-									}
-									push();
-								}
-							});
-						};
-						push()
-
-					})
-				})
-			return fileString
-		} catch (e) {
-			throw e
-		}
+		this.parse()
 	}
 
 	/**
@@ -74,7 +31,7 @@ export class SVGStringParser {
 		* @param svgString svg文件字符串
 		*/
 	parse() {
-		if (/<svg/.test(this.originalSvgString)) {
+		if (!/<svg/.test(this.originalSvgString)) {
 			throw new EvalError('cant parse non svg file.')
 		}
 		if (this.parsed || this.loaded) {

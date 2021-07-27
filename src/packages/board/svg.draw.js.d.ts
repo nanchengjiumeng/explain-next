@@ -11,6 +11,10 @@ type StrokeWidth = {
 	val: number
 }
 
+type ScaleItem = {
+	name: string,
+	value: number
+}
 
 interface MouseEventListener {
 	(evt: MouseEvent): void;

@@ -2,6 +2,7 @@ export enum PenColors {
 	Pink = "#ff0099",
 	Yellow = '#f3f313'
 }
+
 export enum PenShapes {
 	MousePaint = "polyline",
 	Rectangle = 'rect',
@@ -44,5 +45,23 @@ export const StrokeWidthList: StrokeWidth[] = [
 		val: StrokeWidths.Bold,
 		name: '粗'
 	},
+]
 
+export const ScaleTimesList: ScaleItem[] = [
+	{
+		name: '25%',
+		value: 0.25
+	},
+	{
+		name: '50%',
+		value: 0.5
+	},
+	{
+		name: '100%',
+		value: 1
+	},
+	{
+		name: '200%',
+		value: 2
+	}
 ]

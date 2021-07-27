@@ -1,21 +1,22 @@
 import { PenShapes, PenColors, StrokeWidths } from './vars';
 import SVG from 'svg.js'
-import { Ref } from 'vue';
+import { Ref, watch, watchEffect } from 'vue';
 import * as svgDraw from './svgDraw'
 import * as smooth from './smooth'
 
 export function createSvgDraw(
-	node: HTMLElement,
+	ele: HTMLElement,
 	shape: Ref<PenShapes>,
 	color: Ref<PenColors>,
 	strokeWidth: Ref<StrokeWidths>,
 	Locked: Ref<Boolean>,
+	scaleTimes: Ref<number>,
 	width: number,
 	height: number,
 	startWrite?: WriteCallback,
 	endWrite?: WriteCallback
 ): SVG.Doc {
-	const draw: SVG.Doc = SVG(node)
+	const draw: SVG.Doc = SVG(ele)
 	const shapes: SVG.Element[] = [];
 
 	// 处理平滑的线程
@@ -24,9 +25,6 @@ export function createSvgDraw(
 	draw.destroy = () => smoothWorker.terminate()
 
 	let index = 0;
-	let mouseRate = 4 // 捕捉的mousemove的频率，每mouseRate增加一个point
-
-
 	const lockifyMouseEventListener = (mouseEventListener: MouseEventListener): MouseEventListener => {
 		return function (event: MouseEvent) {
 			if (!Locked.value) {
@@ -49,8 +47,7 @@ export function createSvgDraw(
 	}
 
 	const drawing: MouseEventListener = (event: MouseEvent): void => {
-		mouseRate++
-		if (mouseRate % 4 === 0 && shape.value === PenShapes.MousePaint && shapes[index]) {
+		if (shape.value === PenShapes.MousePaint && shapes[index]) {
 			shapes[index].draw('point', event)
 		}
 	}
@@ -58,6 +55,7 @@ export function createSvgDraw(
 	const stopDraw: MouseEventListener = (event: MouseEvent): void => {
 		if (!shapes[index]) return
 		if (shape.value === PenShapes.MousePaint) {
+			shapes[index].draw('point', event)
 			shapes[index].draw('stop', event);
 		} else {
 			shapes[index].draw(event);
@@ -66,6 +64,11 @@ export function createSvgDraw(
 	}
 
 	draw.viewbox(0, 0, width, height) // 设置viewbox宽高
+	watchEffect(() => {
+		draw?.width(100 * scaleTimes.value + '%')
+		draw?.height(100 * scaleTimes.value + '%')
+
+	})
 
 	draw.on('mousedown', lockifyMouseEventListener(startDraw));
 	draw.on('mousemove', lockifyMouseEventListener(drawing))
