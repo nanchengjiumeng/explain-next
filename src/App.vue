@@ -1,18 +1,15 @@
 <template>
-  <SVS />
-  <!-- <Board /> -->
+  <Board />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import Board from "./components/Board.vue";
-import SVS from "./components/lalal.vue";
+import Board from "./components/P5Board/index.vue";
 
 export default defineComponent({
   name: "App",
   components: {
     Board,
-    SVS,
   },
 });
 </script>

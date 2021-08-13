@@ -1,5 +1,6 @@
 <template>
   <div class="board__box" ref="board"></div>
+  <audio></audio>
   <div class="selection">
     Shape:
     <select v-model="shape">
@@ -69,7 +70,7 @@ export default defineComponent({
     const loadSVGString = async () => {
       const svgStringParsed = await loadSVGFromUri("/test.svg?123");
       console.log(svgStringParsed);
-      
+
       instanceDraw.inputSvgString(svgStringParsed.originalSvgString);
     };
 
